@@ -1,5 +1,4 @@
 import { editor_css } from './styles/editor';
-import { inject_css } from './styles/injector';
 import { default_css_theme, FONT_SIZE } from './styles/theme-default';
 import { escape_html } from './utils/html-escape';
 import Prism from 'prismjs';
@@ -39,13 +38,6 @@ export default class CodeFlask {
   }
 
   startEditor() {
-    const isCSSInjected = inject_css(editor_css, null, this.opts.styleParent);
-    
-    if (!isCSSInjected) {
-      throw Error('Failed to inject CodeFlask CSS.');
-      return;
-    }
-
     // The order matters (pre > code). Don't change it
     // or things are going to break.
     this.createWrapper();
@@ -116,10 +108,6 @@ export default class CodeFlask {
     if (this.opts.lineNumbers) {
       this.elWrapper.classList.add('codeflask--has-line-numbers');
       this.createLineNumbers();
-    }
-
-    if (this.opts.defaultTheme) {
-      inject_css(default_css_theme, 'theme-default', this.opts.styleParent);
     }
   }
 

@@ -1,7 +1,7 @@
 {
-  "name": "codeflask",
+  "name": "codeflask-noinline",
   "version": "1.1.0",
-  "description": "A micro code-editor for awesome web pages",
+  "description": "A micro code-editor for awesome web pages without CSS injection",
   "main": "build/codeflask.min.js",
   "module": "build/codeflask.module.js",
   "files": [
