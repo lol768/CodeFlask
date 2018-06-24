@@ -263,8 +263,7 @@ export default class CodeFlask {
   }
 
   highlight() {
-    this.elPre.innerHTML = this.elCode.outerHTML;
-    hljs.highlightBlock(this.elPre);
+    //no-op
   }
 
   onUpdate(callback) {
