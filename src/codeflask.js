@@ -1,7 +1,6 @@
 import { editor_css } from './styles/editor';
 import { default_css_theme, FONT_SIZE } from './styles/theme-default';
 import { escape_html } from './utils/html-escape';
-import Prism from 'prismjs';
 
 export default class CodeFlask {
   constructor(selectorOrElement, opts) {
@@ -254,16 +253,23 @@ export default class CodeFlask {
     this.highlight();
   }
 
-  addLanguage(name, options) {
-    Prism.languages[name] = options;
-  }
-
   populateDefault() {
     this.updateCode(this.code);
   }
 
   highlight() {
-    //no-op
+    if (this.highlightCallback) {
+      this.highlightCallback(this);
+    }
+  }
+
+  setHighlightCallback(callback) {
+    if (callback && {}.toString.call(callback) !== '[object Function]') {
+      throw Error('CodeFlask expects callback of type Function');
+      return;
+    }
+
+    this.highlightCallback = callback;
   }
 
   onUpdate(callback) {
