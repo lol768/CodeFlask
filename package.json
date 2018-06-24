@@ -18,9 +18,7 @@
     "test": "wdio test/wdio.conf.js",
     "prepublishOnly": "npm install && npm run build"
   },
-  "dependencies": {
-    "prismjs": "^1.14.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "chai": "^4.1.2",
     "chromedriver": "^2.38.3",
