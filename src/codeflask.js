@@ -125,7 +125,7 @@ export default class CodeFlask {
     this.elTextarea.addEventListener('input', (e) => {
       this.code = e.target.value;
       this.elCode.innerHTML = escape_html(e.target.value);
-      //this.highlight();
+      this.highlight();
       setTimeout(() => {
         this.runUpdate();
         this.setLineNumber();
@@ -263,7 +263,7 @@ export default class CodeFlask {
   }
 
   highlight() {
-    Prism.highlightElement(this.elCode, false);
+    hljs.highlightBlock(this.elPre);
   }
 
   onUpdate(callback) {
