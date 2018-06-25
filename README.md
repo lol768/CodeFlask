@@ -1,55 +1,41 @@
-[![npm version](https://badge.fury.io/js/codeflask.svg)](https://www.npmjs.com/package/codeflask)
-[![Build Status](https://travis-ci.org/kazzkiq/CodeFlask.svg?branch=master)](https://travis-ci.org/kazzkiq/CodeFlask)
+# Code*Sass*
 
-<p align="center">
-  <img src="logo.png" width="190"><br>
-    CodeFlask: A micro code-editor for awesome web pages.
-</p>
-
-<p align="center">
-  <img src="code.png" width="739"> 
-</p>
+A code editor for people who aren't afraid of HTML tags.
 
 ## Installation
 
-You can install CodeFlask via npm:
+You can't install Code*Sass* via npm.
 
-```
-npm install codeflask
-```
+Do not use it directly in browser via cdn service.
 
-Or use it directly in browser via cdn service:
-
-```
-https://unpkg.com/codeflask/build/codeflask.min.js
-```
+Use the built versions in the `build` folder.
 
 ## Usage
 
 ```js
-import CodeFlask from 'codeflask';
+import CodeSass from 'codesass';
 
-const flask = new CodeFlask('#my-selector', { language: 'js' });
+const sass = new CodeSass('#my-selector', { language: 'js' });
 ```
 
 Add the CSS in your existing stylesheet build process:
 
 ```css
- .codeflask {
+ .codesass {
      position: absolute;
      width: 100%;
      height: 100%;
      overflow: hidden;
 }
- .codeflask, .codeflask * {
+ .codesass, .codesass * {
      box-sizing: border-box;
 }
- .codeflask__pre {
+ .codesass__pre {
      pointer-events: none;
      z-index: 3;
      overflow: hidden;
 }
- .codeflask__textarea {
+ .codesass__textarea {
      background: none;
      border: none;
      color: #fff;
@@ -62,15 +48,15 @@ Add the CSS in your existing stylesheet build process:
      width: 100%;
      height: 100%;
 }
- .codeflask--has-line-numbers .codeflask__textarea {
+ .codesass--has-line-numbers .codesass__textarea {
      width: calc(100% - 40px);
 }
- .codeflask__code {
+ .codesass__code {
      display: block;
      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
      overflow: hidden;
 }
- .codeflask__flatten {
+ .codesass__flatten {
      padding: 10px;
      font-size: 13px;
      line-height: 20px;
@@ -83,11 +69,11 @@ Add the CSS in your existing stylesheet build process:
      outline: none;
      text-align: left;
 }
- .codeflask--has-line-numbers .codeflask__flatten {
+ .codesass--has-line-numbers .codesass__flatten {
      width: calc(100% - 40px);
      left: 40px;
 }
- .codeflask__line-highlight {
+ .codesass__line-highlight {
      position: absolute;
      top: 10px;
      left: 0;
@@ -96,7 +82,7 @@ Add the CSS in your existing stylesheet build process:
      background: rgba(0,0,0,0.1);
      z-index: 1;
 }
- .codeflask__lines {
+ .codesass__lines {
      padding: 10px 4px;
      font-size: 12px;
      line-height: 20px;
@@ -110,13 +96,13 @@ Add the CSS in your existing stylesheet build process:
      color: #999;
      z-index: 2;
 }
- .codeflask__lines__line {
+ .codesass__lines__line {
      display: block;
 }
- .codeflask.codeflask--has-line-numbers {
+ .codesass.codesass--has-line-numbers {
      padding-left: 40px;
 }
- .codeflask.codeflask--has-line-numbers:before {
+ .codesass.codesass--has-line-numbers:before {
      content: '';
      position: absolute;
      left: 0;
@@ -126,52 +112,63 @@ Add the CSS in your existing stylesheet build process:
      background: #eee;
      z-index: 1;
 }
- .codeflask {
+ .codesass {
      background: #fff;
      color: #4f559c;
 }
- .codeflask .token.punctuation {
+ .codesass .token.punctuation {
      color: #4a4a4a;
 }
- .codeflask .token.keyword {
+ .codesass .token.keyword {
      color: #8500ff;
 }
- .codeflask .token.operator {
+ .codesass .token.operator {
      color: #ff5598;
 }
- .codeflask .token.string {
+ .codesass .token.string {
      color: #41ad8f;
 }
- .codeflask .token.comment {
+ .codesass .token.comment {
      color: #9badb7;
 }
- .codeflask .token.function {
+ .codesass .token.function {
      color: #8500ff;
 }
- .codeflask .token.boolean {
+ .codesass .token.boolean {
      color: #8500ff;
 }
- .codeflask .token.number {
+ .codesass .token.number {
      color: #8500ff;
 }
- .codeflask .token.selector {
+ .codesass .token.selector {
      color: #8500ff;
 }
- .codeflask .token.property {
+ .codesass .token.property {
      color: #8500ff;
 }
- .codeflask .token.tag {
+ .codesass .token.tag {
      color: #8500ff;
 }
- .codeflask .token.attr-value {
+ .codesass .token.attr-value {
      color: #8500ff;
 }
+```
+
+### Handling syntax highlighting
+
+```js
+sass.setHighlightCallback((sass) => {
+  // get the <code> tag to highlight
+  const codeElement = sass.elCode;
+  // use your highlighting engine here. highlightjs is shown
+  hljs.highlightBlock(codeElement);
+});
 ```
 
 ### Listening for changes in editor
 
 ```js
-flask.onUpdate((code) => {
+sass.onUpdate((code) => {
   // do something with code here.
   // this will trigger whenever the code
   // in the editor changes.
@@ -182,21 +179,21 @@ flask.onUpdate((code) => {
 
 ```js
 // This will also trigger .onUpdate()
-flask.updateCode('const my_new_code_here = "Blabla"');
+sass.updateCode('const my_new_code_here = "Blabla"');
 ```
 
 ### Getting the current code from editor
 
 ```js
-const code = flask.getCode();
+const code = sass.getCode();
 ```
 
 ### Enabling line numbers
 
 ```js
-import CodeFlask from 'codeflask';
+import CodeSass from 'codesass';
 
-const flask = new CodeFlask('#my-selector', {
+const sass = new CodeSass('#my-selector', {
   language: 'js',
   lineNumbers: true
 });
@@ -205,44 +202,30 @@ const flask = new CodeFlask('#my-selector', {
 ### Enabling rtl (right to left writing)
 
 ```js
-import CodeFlask from 'codeflask';
+import CodeSass from 'codesass';
 
-const flask = new CodeFlask('#my-selector', {
+const sass = new CodeSass('#my-selector', {
   language: 'js',
   rtl: true
 });
 ```
 
-### Adding other languages support:
+### Adding other languages support
 
-```js
-flask.addLanguage('ruby', options)
-```
+That's up to the highlighting engine, which is independent from the editor.
 
-This API is simply a proxy to add a new language to [Prism](http://prismjs.com/) itself (the code highlighter). The `options` parameter must be the same accepted in Prism. You can read more about it [here](http://prismjs.com/extending.html#language-definitions).
+### Adding your own theme to CodeSass
 
-By default, CodeFlask supports the following languages (which are also the default supported in Prism):
+By default, Code*Sass* comes with a simple theme made from scratch called **CodeNoon**. You can see
+it in the CSS you're supposed to use above.
 
-- Markup (HTML/XML);
-- CSS;
-- C-like;
-- JavaScript;
+If you want to use your own theme, write your own CSS and include it instead. That's right, you
+don't have to write JavaScript to write CSS. That doesn't even make sense!
 
-### Adding your own theme to CodeFlask
+## Credits and thanks
 
-By default, CodeFlask comes with a simple theme made from scratch called **[CodeNoon](https://github.com/kazzkiq/CodeFlask.js/blob/master/src/styles/theme-default.js)**.
+Code*Sass* was made possible by awesome open-source projects such as [Rollup](https://github.com/rollup/rollup).
 
-You can easily override this theme with your own by writting your own CSS and adding it to your project. If that's the case, you should also disable **CodeNoon** with the `defaultTheme` option:
-
-```js
-import CodeFlask from 'codeflask';
-
-const flask = new CodeFlask('#my-selector', {
-  language: 'js',
-  defaultTheme: false
-});
-```
-
-# Credits & Thanks
-
-CodeFlask.js was made possible by awesome open-source projects such as [Prism.js](https://github.com/PrismJS/prism) and [Rollup](https://github.com/rollup/rollup).
+Thanks to kazzkiq for making CodeFlask, which is a version of this project for people who *are*
+afraid of HTML tags and want JavaScript to make those scary tags for them, killing Content Security
+Policies.

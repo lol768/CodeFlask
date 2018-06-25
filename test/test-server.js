@@ -8,19 +8,19 @@ const server = micro(async (req, res) => {
       return fs.readFileSync(__dirname + '/e2e/test.html', 'utf8');
     break;
 
-    case '/codeflask.min.js':
-      return fs.readFileSync(__dirname + '/../build/codeflask.min.js', 'utf8');
+    case '/codesass.min.js':
+      return fs.readFileSync(__dirname + '/../build/codesass.min.js', 'utf8');
     break;
 
-    case 'codeflask.min.js':
-      return fs.readFileSync(__dirname + '/../build/codeflask.min.js', 'utf8');
+    case 'codesass.min.js':
+      return fs.readFileSync(__dirname + '/../build/codesass.min.js', 'utf8');
     break;
 
-    case './codeflask.min.js':
-      return fs.readFileSync(__dirname + '/../build/codeflask.min.js', 'utf8');
+    case './codesass.min.js':
+      return fs.readFileSync(__dirname + '/../build/codesass.min.js', 'utf8');
     break;
 
-    default: 
+    default:
       return '404';
     break;
   }

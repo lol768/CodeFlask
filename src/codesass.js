@@ -1,20 +1,18 @@
-import { editor_css } from './styles/editor';
-import { default_css_theme, FONT_SIZE } from './styles/theme-default';
 import { escape_html } from './utils/html-escape';
 
-export default class CodeFlask {
+export default class CodeSass {
   constructor(selectorOrElement, opts) {
     if (!selectorOrElement) {
-      // If no selector or element is passed to CodeFlask,
+      // If no selector or element is passed to CodeSass,
       // stop execution and throw error.
-      throw Error('CodeFlask expects a parameter which is Element or a String selector');
+      throw Error('CodeSass expects a parameter which is Element or a String selector');
       return;
     }
 
     if (!opts) {
-      // If no selector or element is passed to CodeFlask,
+      // If no selector or element is passed to CodeSass,
       // stop execution and throw error.
-      throw Error('CodeFlask expects an object containing options as second parameter');
+      throw Error('CodeSass expects an object containing options as second parameter');
       return;
     }
 
@@ -54,27 +52,27 @@ export default class CodeFlask {
     this.code = this.editorRoot.innerHTML;
     this.editorRoot.innerHTML = '';
     this.elWrapper = this.createElement('div', this.editorRoot);
-    this.elWrapper.classList.add('codeflask');
+    this.elWrapper.classList.add('codesass');
   }
 
   createTextarea() {
     this.elTextarea = this.createElement('textarea', this.elWrapper);
-    this.elTextarea.classList.add('codeflask__textarea', 'codeflask__flatten');
+    this.elTextarea.classList.add('codesass__textarea', 'codesass__flatten');
   }
 
   createPre() {
     this.elPre = this.createElement('pre', this.elWrapper);
-    this.elPre.classList.add('codeflask__pre', 'codeflask__flatten');
+    this.elPre.classList.add('codesass__pre', 'codesass__flatten');
   }
 
   createCode() {
     this.elCode = this.createElement('code', this.elPre);
-    this.elCode.classList.add('codeflask__code', `language-${this.opts.language || 'html'}`);
+    this.elCode.classList.add('codesass__code', `language-${this.opts.language || 'html'}`);
   }
 
   createLineNumbers() {
     this.elLineNumbers = this.createElement('div', this.elWrapper);
-    this.elLineNumbers.classList.add('codeflask__lines');
+    this.elLineNumbers.classList.add('codesass__lines');
     this.setLineNumber();
   }
 
@@ -105,7 +103,7 @@ export default class CodeFlask {
     }
 
     if (this.opts.lineNumbers) {
-      this.elWrapper.classList.add('codeflask--has-line-numbers');
+      this.elWrapper.classList.add('codesass--has-line-numbers');
       this.createLineNumbers();
     }
   }
@@ -114,7 +112,7 @@ export default class CodeFlask {
     let numberList = '';
 
     for (let i = 1; i <= this.lineNumber; i++) {
-      numberList = numberList + `<span class="codeflask__lines__line">${i}</span>`;
+      numberList = numberList + `<span class="codesass__lines__line">${i}</span>`;
     }
 
     this.elLineNumbers.innerHTML = numberList;
@@ -291,7 +289,7 @@ export default class CodeFlask {
 
   setHighlightCallback(callback) {
     if (callback && {}.toString.call(callback) !== '[object Function]') {
-      throw Error('CodeFlask expects callback of type Function');
+      throw Error('CodeSass expects callback of type Function');
       return;
     }
 
@@ -300,7 +298,7 @@ export default class CodeFlask {
 
   onUpdate(callback) {
     if (callback && {}.toString.call(callback) !== '[object Function]') {
-      throw Error('CodeFlask expects callback of type Function');
+      throw Error('CodeSass expects callback of type Function');
       return;
     }
 
