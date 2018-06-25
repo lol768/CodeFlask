@@ -1,12 +1,12 @@
 {
-  "name": "codeflask-noinline",
+  "name": "codesass",
   "version": "1.1.0",
   "description": "A micro code-editor for awesome web pages without CSS injection",
-  "main": "build/codeflask.min.js",
-  "module": "build/codeflask.module.js",
+  "main": "build/codesass.min.js",
+  "module": "build/codesass.module.js",
   "files": [
-    "build/codeflask.min.js",
-    "build/codeflask.module.js",
+    "build/codesass.min.js",
+    "build/codesass.module.js",
     "README.md",
     "LICENSE"
   ],
@@ -37,7 +37,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kazzkiq/CodeFlask.git"
+    "url": "git+https://github.com/lol768/CodeFlask.git"
   },
   "keywords": [
     "code-editor",
@@ -48,7 +48,7 @@
   "author": "Claudio Holanda",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kazzkiq/CodeFlask/issues"
+    "url": "https://github.com/lol768/CodeFlask/issues"
   },
-  "homepage": "https://kazzkiq.github.io/CodeFlask/"
+  "homepage": "https://github.com/lol768/CodeFlask"
 }
