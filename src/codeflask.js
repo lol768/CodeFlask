@@ -135,6 +135,7 @@ export default class CodeFlask {
     this.elTextarea.addEventListener('keydown', (e) => {
       this.handleTabs(e);
       this.handleSelfClosingCharacters(e);
+      this.handleClosingCharacters(e);
       this.handleNewLineIndentation(e);
     });
 
@@ -187,6 +188,31 @@ export default class CodeFlask {
       this.closeCharacter('>');
       break;
     }
+  }
+
+  handleClosingCharacters(e) {
+    const closeChars = [')', ']', '}', '>'];
+    const key = e.key;
+
+    if (!closeChars.includes(key)) {
+      return;
+    }
+
+    const end = this.elTextarea.selectionEnd;
+
+    if (this.elTextarea.selectionStart !== end) {
+      return;
+    }
+
+    const nextChar = this.code.substring(end, end + 1);
+
+    if (nextChar !== key) {
+      return;
+    }
+
+    e.preventDefault();
+
+    this.elTextarea.selectionStart = this.elTextarea.selectionEnd = end + 1;
   }
 
   setLineNumber() {
