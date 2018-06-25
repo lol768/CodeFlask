@@ -1,6 +1,6 @@
 # Code*Sass*
 
-A code editor for people who aren't afraid of HTML tags.
+A code editor for people who aren't afraid of HTML `<link>` tags.
 
 ## Installation
 
@@ -227,5 +227,5 @@ don't have to write JavaScript to write CSS. That doesn't even make sense!
 Code*Sass* was made possible by awesome open-source projects such as [Rollup](https://github.com/rollup/rollup).
 
 Thanks to kazzkiq for making CodeFlask, which is a version of this project for people who *are*
-afraid of HTML tags and want JavaScript to make those scary tags for them, killing Content Security
+afraid of HTML `<link>` tags and want JavaScript to make those scary tags for them, killing Content Security
 Policies.
