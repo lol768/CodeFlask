@@ -244,7 +244,7 @@ export default class CodeSass {
   getTabSize() {
     var indentDepth = this.opts.tabSize || 2;
 
-    const match = this.code.match(/^\s+/m);
+    const match = this.code.match(/^ +/m);
     if (match !== null) {
       indentDepth = match[0].length;
     }
@@ -274,7 +274,7 @@ export default class CodeSass {
   getCurrentLineTabSize() {
     var indentLevel = 0;
 
-    const newlineMatch = this.getCurrentLine().match(/^(\s+)/);
+    const newlineMatch = this.getCurrentLine().match(/^( +)/);
     if (newlineMatch !== null) {
       indentLevel = newlineMatch[0].length;
     }
