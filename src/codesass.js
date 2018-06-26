@@ -226,30 +226,52 @@ export default class CodeSass {
       return;
     };
 
-    // TODO: Make this shit work right
+    const selectionStart = this.elTextarea.selectionStart;
+    const selectionEnd = this.elTextarea.selectionEnd;
 
-    // const selectionStart = this.elTextarea.selectionStart;
-    // const selectionEnd = this.elTextarea.selectionEnd;
-    // const allLines = this.code.split('\n').length;
-    // const lines = this.code.substring(0, selectionStart).split('\n');
-    // const currentLine = lines.length;
-    // const lastLine = lines[currentLine - 1];
+    // TODO: handle this case
+    if (selectionStart !== selectionEnd) {
+      return;
+    }
 
-    // console.log(currentLine, allLines);
+    const prevChar = this.code.substring(selectionStart - 1, selectionStart);
 
-    // if (lastLine !== undefined && currentLine < allLines) {
-    //   e.preventDefault();
-    //   const spaces = lastLine.match(/^ {1,}/);
+    const indentTrailing = prevChar === '{' || prevChar === '(' || prevChar === '[';
 
-    //   if (spaces) {
-    //     console.log(spaces[0].length);
-    //     const newCode = `${this.code.substring(0, selectionStart)}\n${' '.repeat(spaces[0].length)}${this.code.substring(selectionEnd)}`;
-    //     this.updateCode(newCode);
-    //     setTimeout(() => {
-    //       this.elTextarea.selectionEnd = selectionEnd + spaces[0].length + 1;
-    //     }, 0);
-    //   }
-    // }
+    const match = this.code.match(/^ +/m);
+    var indentDepth = 2;
+    if (match !== null) {
+      indentDepth = match[0].length;
+    }
+
+    const lastNewLine = this.code.substring(0, selectionStart).lastIndexOf('\n');
+    const newlineMatch = this.code.substring(lastNewLine + 1).match(/^( +)/);
+    var indentLevel = 0;
+    if (newlineMatch !== null) {
+      indentLevel = newlineMatch[0].length;
+    }
+
+    if (indentTrailing) {
+      indentLevel += indentDepth;
+    }
+
+    e.preventDefault();
+
+    const leading = this.code.substring(0, selectionStart);
+    const trailing = this.code.substring(selectionEnd);
+    const indent = ' '.repeat(indentLevel);
+
+    var newCode;
+    if (indentTrailing) {
+      const lastIndent = ' '.repeat(indentLevel - indentDepth);
+      newCode = `${leading}\n${indent}\n${lastIndent}${trailing}`;
+    } else {
+      newCode = `${leading}\n${indent}${trailing}`;
+    }
+
+    this.updateCode(newCode);
+    this.setLineNumber();
+    this.elTextarea.selectionStart = this.elTextarea.selectionEnd = leading.length + 1 + indentLevel;
   }
 
   closeCharacter(closeChar) {
