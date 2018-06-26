@@ -31,6 +31,13 @@ export default class CodeSass {
     }
 
     this.opts = opts;
+    this.brackets = {
+      '(': ')',
+      '[': ']',
+      '{': '}',
+      '<': '>',
+    };
+
     this.startEditor();
   }
 
@@ -182,37 +189,18 @@ export default class CodeSass {
   }
 
   handleSelfClosingCharacters(e) {
-    const openChars = ['(', '[', '{', '<'];
-    const key = e.key;
-
-    if (!openChars.includes(key)) {
+    const closeChar = this.brackets[e.key];
+    if (!closeChar) {
       return;
     }
 
-    switch(key) {
-      case '(':
-      this.closeCharacter(')');
-      break;
-
-      case '[':
-      this.closeCharacter(']');
-      break;
-
-      case '{':
-      this.closeCharacter('}');
-      break;
-
-      case '<':
-      this.closeCharacter('>');
-      break;
-    }
+    this.closeCharacter(closeChar);
   }
 
   handleClosingCharacters(e) {
-    const closeChars = [')', ']', '}', '>'];
     const key = e.key;
 
-    if (!closeChars.includes(key)) {
+    if (!Object.values(this.brackets).includes(key)) {
       return;
     }
 
@@ -296,8 +284,10 @@ export default class CodeSass {
     }
 
     const prevChar = this.code.substring(selectionStart - 1, selectionStart);
+    const nextChar = this.code.substring(selectionStart, selectionStart + 1);
 
-    const indentTrailing = prevChar === '{' || prevChar === '(' || prevChar === '[';
+    const indentTrailing = prevChar === '{' || prevChar === '(' || prevChar === '[';;
+    const addNewLine = indentTrailing && this.brackets[prevChar] === nextChar;
 
     const indentDepth = this.getTabSize();
 
@@ -313,13 +303,15 @@ export default class CodeSass {
     const trailing = this.code.substring(selectionEnd);
     const indent = ' '.repeat(indentLevel);
 
-    var newCode;
+    var newCode = `${leading}\n${indent}`
+    if (addNewLine) {
+      newCode += `\n`;
+    }
     if (indentTrailing) {
       const lastIndent = ' '.repeat(indentLevel - indentDepth);
-      newCode = `${leading}\n${indent}\n${lastIndent}${trailing}`;
-    } else {
-      newCode = `${leading}\n${indent}${trailing}`;
+      newCode += lastIndent;
     }
+    newCode += trailing;
 
     this.updateCode(newCode);
     this.setLineNumber();
