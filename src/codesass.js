@@ -238,14 +238,14 @@ export default class CodeSass {
 
     const indentTrailing = prevChar === '{' || prevChar === '(' || prevChar === '[';
 
-    const match = this.code.match(/^\s+/m);
+    const match = this.code.match(/^ +/m);
     var indentDepth = 2;
     if (match !== null) {
       indentDepth = match[0].length;
     }
 
     const lastNewLine = this.code.substring(0, selectionStart).lastIndexOf('\n');
-    const newlineMatch = this.code.substring(lastNewLine + 1).match(/^(\s+)/);
+    const newlineMatch = this.code.substring(lastNewLine + 1).match(/^( +)/);
     var indentLevel = 0;
     if (newlineMatch !== null) {
       indentLevel = newlineMatch[0].length;
