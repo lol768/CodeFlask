@@ -149,16 +149,36 @@ export default class CodeSass {
     if (e.keyCode !== 9) {
       return;
     }
+
     e.preventDefault();
 
-    const tabCode = 9;
-    const pressedCode = e.keyCode;
     const selectionStart = this.elTextarea.selectionStart;
     const selectionEnd = this.elTextarea.selectionEnd;
-    const newCode = `${this.code.substring(0, selectionStart)}${' '.repeat(this.opts.tabSize)}${this.code.substring(selectionEnd)}`;
 
-    this.updateCode(newCode);
-    this.elTextarea.selectionEnd = selectionEnd + this.opts.tabSize;
+    if (e.shiftKey) {
+      const currentIndent = this.getCurrentLineTabSize();
+      if (currentIndent === 0) {
+        return;
+      }
+
+      const tabSize = this.getTabSize();
+      const newTabSize = Math.max(0, currentIndent - tabSize);
+      const lastNewLine = this.getCurrentLinePos()[0] + 1;
+
+      const leading = this.code.substring(0, lastNewLine + newTabSize);
+      const trailing = this.code.substring(lastNewLine + currentIndent);
+
+      this.updateCode(`${leading}${trailing}`);
+
+      this.elTextarea.selectionStart = selectionStart - tabSize;
+      this.elTextarea.selectionEnd = selectionEnd - tabSize;
+    } else {
+      const tabSize = this.getTabSize();
+      const newCode = `${this.code.substring(0, selectionStart)}${' '.repeat(tabSize)}${this.code.substring(selectionEnd)}`;
+
+      this.updateCode(newCode);
+      this.elTextarea.selectionEnd = selectionEnd + tabSize;
+    }
   }
 
   handleSelfClosingCharacters(e) {
@@ -221,6 +241,47 @@ export default class CodeSass {
     }
   }
 
+  getTabSize() {
+    var indentDepth = this.opts.tabSize || 2;
+
+    const match = this.code.match(/^\s+/m);
+    if (match !== null) {
+      indentDepth = match[0].length;
+    }
+
+    return indentDepth;
+  }
+
+  getCurrentLinePos() {
+    const selectionStart = this.elTextarea.selectionStart;
+
+    const lastNewLine = this.code.substring(0, selectionStart).lastIndexOf('\n');
+    const nextNewLine = this.code.substring(selectionStart + 1).indexOf('\n');
+
+    return [lastNewLine, nextNewLine];
+  }
+
+  getCurrentLine() {
+    const selectionStart = this.elTextarea.selectionStart;
+
+    const [lastNewLine, nextNewLine] = this.getCurrentLinePos();
+
+    const end = nextNewLine >= 0 ? selectionStart + nextNewLine : undefined;
+
+    return this.code.substring(lastNewLine + 1, end);
+  }
+
+  getCurrentLineTabSize() {
+    var indentLevel = 0;
+
+    const newlineMatch = this.getCurrentLine().match(/^(\s+)/);
+    if (newlineMatch !== null) {
+      indentLevel = newlineMatch[0].length;
+    }
+
+    return indentLevel;
+  }
+
   handleNewLineIndentation(e) {
     if (e.keyCode !== 13) {
       return;
@@ -238,18 +299,9 @@ export default class CodeSass {
 
     const indentTrailing = prevChar === '{' || prevChar === '(' || prevChar === '[';
 
-    const match = this.code.match(/^\s+/m);
-    var indentDepth = 2;
-    if (match !== null) {
-      indentDepth = match[0].length;
-    }
+    const indentDepth = this.getTabSize();
 
-    const lastNewLine = this.code.substring(0, selectionStart).lastIndexOf('\n');
-    const newlineMatch = this.code.substring(lastNewLine + 1).match(/^(\s+)/);
-    var indentLevel = 0;
-    if (newlineMatch !== null) {
-      indentLevel = newlineMatch[0].length;
-    }
+    var indentLevel = this.getCurrentLineTabSize();
 
     if (indentTrailing) {
       indentLevel += indentDepth;
