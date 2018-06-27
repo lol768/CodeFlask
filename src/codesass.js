@@ -35,7 +35,6 @@ export default class CodeSass {
       '(': ')',
       '[': ']',
       '{': '}',
-      '<': '>',
     };
 
     this.startEditor();
