@@ -31,6 +31,12 @@ export default class CodeSass {
     }
 
     this.opts = opts;
+    this.brackets = {
+      '(': ')',
+      '[': ']',
+      '{': '}',
+    };
+
     this.startEditor();
   }
 
@@ -149,50 +155,51 @@ export default class CodeSass {
     if (e.keyCode !== 9) {
       return;
     }
+
     e.preventDefault();
 
-    const tabCode = 9;
-    const pressedCode = e.keyCode;
     const selectionStart = this.elTextarea.selectionStart;
     const selectionEnd = this.elTextarea.selectionEnd;
-    const newCode = `${this.code.substring(0, selectionStart)}${' '.repeat(this.opts.tabSize)}${this.code.substring(selectionEnd)}`;
 
-    this.updateCode(newCode);
-    this.elTextarea.selectionEnd = selectionEnd + this.opts.tabSize;
+    if (e.shiftKey) {
+      const currentIndent = this.getCurrentLineTabSize();
+      if (currentIndent === 0) {
+        return;
+      }
+
+      const tabSize = this.getTabSize();
+      const newTabSize = Math.max(0, currentIndent - tabSize);
+      const lastNewLine = this.getCurrentLinePos()[0] + 1;
+
+      const leading = this.code.substring(0, lastNewLine + newTabSize);
+      const trailing = this.code.substring(lastNewLine + currentIndent);
+
+      this.updateCode(`${leading}${trailing}`);
+
+      this.elTextarea.selectionStart = selectionStart - tabSize;
+      this.elTextarea.selectionEnd = selectionEnd - tabSize;
+    } else {
+      const tabSize = this.getTabSize();
+      const newCode = `${this.code.substring(0, selectionStart)}${' '.repeat(tabSize)}${this.code.substring(selectionEnd)}`;
+
+      this.updateCode(newCode);
+      this.elTextarea.selectionEnd = selectionEnd + tabSize;
+    }
   }
 
   handleSelfClosingCharacters(e) {
-    const openChars = ['(', '[', '{', '<'];
-    const key = e.key;
-
-    if (!openChars.includes(key)) {
+    const closeChar = this.brackets[e.key];
+    if (!closeChar) {
       return;
     }
 
-    switch(key) {
-      case '(':
-      this.closeCharacter(')');
-      break;
-
-      case '[':
-      this.closeCharacter(']');
-      break;
-
-      case '{':
-      this.closeCharacter('}');
-      break;
-
-      case '<':
-      this.closeCharacter('>');
-      break;
-    }
+    this.closeCharacter(closeChar);
   }
 
   handleClosingCharacters(e) {
-    const closeChars = [')', ']', '}', '>'];
     const key = e.key;
 
-    if (!closeChars.includes(key)) {
+    if (!Object.values(this.brackets).includes(key)) {
       return;
     }
 
@@ -221,35 +228,93 @@ export default class CodeSass {
     }
   }
 
+  getTabSize() {
+    var indentDepth = this.opts.tabSize || 2;
+
+    const match = this.code.match(/^ +/m);
+    if (match !== null) {
+      indentDepth = match[0].length;
+    }
+
+    return indentDepth;
+  }
+
+  getCurrentLinePos() {
+    const selectionStart = this.elTextarea.selectionStart;
+
+    const lastNewLine = this.code.substring(0, selectionStart).lastIndexOf('\n');
+    const nextNewLine = this.code.substring(selectionStart + 1).indexOf('\n');
+
+    return [lastNewLine, nextNewLine];
+  }
+
+  getCurrentLine() {
+    const selectionStart = this.elTextarea.selectionStart;
+
+    const [lastNewLine, nextNewLine] = this.getCurrentLinePos();
+
+    const end = nextNewLine >= 0 ? selectionStart + nextNewLine : undefined;
+
+    return this.code.substring(lastNewLine + 1, end);
+  }
+
+  getCurrentLineTabSize() {
+    var indentLevel = 0;
+
+    const newlineMatch = this.getCurrentLine().match(/^( +)/);
+    if (newlineMatch !== null) {
+      indentLevel = newlineMatch[0].length;
+    }
+
+    return indentLevel;
+  }
+
   handleNewLineIndentation(e) {
     if (e.keyCode !== 13) {
       return;
     };
 
-    // TODO: Make this shit work right
+    const selectionStart = this.elTextarea.selectionStart;
+    const selectionEnd = this.elTextarea.selectionEnd;
 
-    // const selectionStart = this.elTextarea.selectionStart;
-    // const selectionEnd = this.elTextarea.selectionEnd;
-    // const allLines = this.code.split('\n').length;
-    // const lines = this.code.substring(0, selectionStart).split('\n');
-    // const currentLine = lines.length;
-    // const lastLine = lines[currentLine - 1];
+    // TODO: handle this case
+    if (selectionStart !== selectionEnd) {
+      return;
+    }
 
-    // console.log(currentLine, allLines);
+    const prevChar = this.code.substring(selectionStart - 1, selectionStart);
+    const nextChar = this.code.substring(selectionStart, selectionStart + 1);
 
-    // if (lastLine !== undefined && currentLine < allLines) {
-    //   e.preventDefault();
-    //   const spaces = lastLine.match(/^ {1,}/);
+    const indentTrailing = prevChar === '{' || prevChar === '(' || prevChar === '[';;
+    const addNewLine = indentTrailing && this.brackets[prevChar] === nextChar;
 
-    //   if (spaces) {
-    //     console.log(spaces[0].length);
-    //     const newCode = `${this.code.substring(0, selectionStart)}\n${' '.repeat(spaces[0].length)}${this.code.substring(selectionEnd)}`;
-    //     this.updateCode(newCode);
-    //     setTimeout(() => {
-    //       this.elTextarea.selectionEnd = selectionEnd + spaces[0].length + 1;
-    //     }, 0);
-    //   }
-    // }
+    const indentDepth = this.getTabSize();
+
+    var indentLevel = this.getCurrentLineTabSize();
+
+    if (indentTrailing) {
+      indentLevel += indentDepth;
+    }
+
+    e.preventDefault();
+
+    const leading = this.code.substring(0, selectionStart);
+    const trailing = this.code.substring(selectionEnd);
+    const indent = ' '.repeat(indentLevel);
+
+    var newCode = `${leading}\n${indent}`
+    if (addNewLine) {
+      newCode += `\n`;
+    }
+    if (indentTrailing) {
+      const lastIndent = ' '.repeat(indentLevel - indentDepth);
+      newCode += lastIndent;
+    }
+    newCode += trailing;
+
+    this.updateCode(newCode);
+    this.setLineNumber();
+    this.elTextarea.selectionStart = this.elTextarea.selectionEnd = leading.length + 1 + indentLevel;
   }
 
   closeCharacter(closeChar) {
